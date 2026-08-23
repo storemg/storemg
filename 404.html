@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>MG Store</title>
+    <!--
+      GitHub Pages serve este arquivo para QUALQUER rota que não seja
+      um arquivo real (ex: /admin, /produto/12, /carrinho).
+      Aqui a gente transforma o caminho em query string e manda pra
+      raiz do site, onde o script no index.html devolve a URL original
+      e o React Router entrega a página certa.
+      pathSegmentsToKeep = 1 porque o site fica em
+      https://usuario.github.io/mg-store/  (1 segmento: "mg-store").
+      Se um dia usar domínio próprio na raiz, troque para 0.
+    -->
+    <script type="text/javascript">
+      var pathSegmentsToKeep = 1
+      var l = window.location
+      l.replace(
+        l.protocol +
+          '//' +
+          l.hostname +
+          (l.port ? ':' + l.port : '') +
+          l.pathname
+            .split('/')
+            .slice(0, 1 + pathSegmentsToKeep)
+            .join('/') +
+          '/?/' +
+          l.pathname
+            .slice(1)
+            .split('/')
+            .slice(pathSegmentsToKeep)
+            .join('/')
+            .replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash
+      )
+    </script>
+  </head>
+  <body></body>
+</html>

@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+# Nunca versionar variáveis de ambiente reais
+.env
+.env.local
+.env.production
+
+# editor/OS
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+*.log
