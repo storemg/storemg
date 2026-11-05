@@ -29,3 +29,59 @@ h1, h2, h3, h4 {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ---------- Loja pública (tema claro) — não afeta o /admin ---------- */
+
+.store-theme h1,
+.store-theme h2,
+.store-theme h3,
+.store-theme h4 {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Largura padrão do conteúdo da loja. Fica na camada "components" para que
+   classes do Tailwind (ex: max-w-2xl) possam sobrescrevê-la quando preciso. */
+@layer components {
+  .wrap {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1264px;
+    padding-inline: 16px;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 24px;
+    }
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Faixa de avisos do topo: rolagem contínua da direita para a esquerda.
+   A faixa tem duas metades idênticas; ao andar -50% o loop recomeça sem salto. */
+.marquee-track {
+  animation: marquee 80s linear infinite;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+.font-heading {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}

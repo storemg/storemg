@@ -7,7 +7,7 @@ Loja virtual de celulares, acessórios, periféricos e eletrônicos, com painel 
 | Camada | Escolha | Por quê |
 |---|---|---|
 | Frontend | React + Vite + TypeScript + Tailwind | Gera um build 100% estático, compatível com GitHub Pages, e é rápido de manter. |
-| Roteamento | React Router (`BrowserRouter`) | Rotas limpas como `/admin`, `/produto/:id`. Um truque de `404.html` (explicado abaixo) faz isso funcionar no GitHub Pages, que não tem servidor configurável. |
+| Roteamento | React Router (`HashRouter`) | Rotas como `/#/admin`, `/#/produto/:id`. O `#` é o que garante que o site funcione em qualquer subpasta do GitHub Pages (ou domínio próprio) sem nenhuma configuração extra — o navegador nunca pede uma página nova ao servidor ao trocar de rota interna. |
 | Banco de dados + Autenticação | Supabase (Postgres + Auth + Storage) | GitHub Pages só serve arquivos estáticos — não roda banco de dados nem backend. Supabase resolve as três coisas que o site precisa (banco, login seguro, upload de imagem) com um serviço gratuito e sem servidor próprio pra manter. |
 
 **Importante:** o código-fonte fica no GitHub. O site (frontend) é publicado no GitHub Pages. O banco de dados e a autenticação ficam no Supabase — nunca dentro do GitHub Pages, porque ele não executa nada no servidor.
@@ -67,9 +67,9 @@ insert into admin_users (id, email)
 values ('UID_COPIADO_AQUI', 'seuemail@mgstore.com.br');
 ```
 
-Pronto — esse e-mail e senha já podem logar em `/admin`.
+Pronto — esse e-mail e senha já podem logar em `/#/admin`.
 
-Para adicionar outros administradores depois, repita o processo: crie o usuário em Authentication → Users e insira o UID em `admin_users`. A página `/admin/configuracoes` do painel explica esse mesmo passo a passo.
+Para adicionar outros administradores depois, repita o processo: crie o usuário em Authentication → Users e insira o UID em `admin_users`. A página `/#/admin/configuracoes` do painel explica esse mesmo passo a passo.
 
 ## 5. Rodar localmente
 
@@ -78,7 +78,7 @@ npm run dev
 ```
 
 - Loja pública: `http://localhost:5173/`
-- Painel admin: `http://localhost:5173/admin` (redireciona para login se não estiver autenticado)
+- Painel admin: `http://localhost:5173/#/admin` (redireciona para login se não estiver autenticado)
 
 ## 6. Publicar no GitHub
 
@@ -107,19 +107,19 @@ Isso builda o projeto e publica a pasta `dist` na branch `gh-pages`. Depois, no 
 Seu site ficará em:
 `https://SEU_USUARIO.github.io/mg-store/`
 e o painel em:
-`https://SEU_USUARIO.github.io/mg-store/admin/`
+`https://SEU_USUARIO.github.io/mg-store/#/admin`
 
 **Sobre as variáveis de ambiente no GitHub Pages:** como o Pages só serve arquivos estáticos, as variáveis `VITE_*` precisam estar preenchidas no `.env` **no momento do `npm run build`**, na sua máquina (ou em uma GitHub Action, se preferir automatizar). Elas ficam embutidas no build — por isso só a chave `anon` (pública por natureza) é usada no frontend; nunca a chave `service_role`.
 
-Se no futuro você quiser trocar para um domínio próprio (ex: `mgstore.com.br`), não precisa mudar nada no código: o projeto usa caminhos relativos (`base: './'` no `vite.config.ts`) e rotas absolutas simples (`/admin`), então basta apontar o domínio para o mesmo build.
+Se no futuro você quiser trocar para um domínio próprio (ex: `mgstore.com.br`), não precisa mudar nada no código: o projeto usa caminhos relativos (`base: './'` no `vite.config.ts`) e rotas com hash (`/#/admin`), então basta apontar o domínio para o mesmo build.
 
-### Por que existe um `public/404.html`?
+### Por que as rotas têm um `#` (ex: `/#/admin`)?
 
-GitHub Pages não tem servidor configurável: se alguém acessa `/admin` direto ou aperta F5 numa rota interna, o GitHub devolve 404 porque não existe um arquivo físico `admin/index.html`. O `404.html` incluso redireciona esse acesso de volta para o `index.html`, guardando a rota original — e um script no `index.html` restaura a URL certa antes do React assumir. Isso é o que permite `/admin` funcionar como uma rota "de verdade", sem hash (`#`) na URL.
+GitHub Pages não tem servidor configurável: se o site usasse rotas "limpas" como `/admin` sem `#`, acessar esse link direto ou apertar F5 devolveria uma página 404, porque não existe um arquivo físico `admin/index.html` no servidor. Usando `HashRouter`, tudo depois do `#` é resolvido só pelo navegador — o servidor sempre entrega o mesmo `index.html`, e o React cuida do resto. Isso funciona em qualquer subpasta do GitHub Pages ou domínio próprio, sem nenhuma configuração extra.
 
 ### Alternativa: Vercel ou Netlify
 
-Se preferir não usar o truque do `404.html`, qualquer plataforma com suporte nativo a SPA (Vercel, Netlify) publica este mesmo projeto sem configuração extra — é só importar o repositório do GitHub. O banco de dados continua sendo o Supabase de qualquer forma.
+Se preferir uma URL sem `#` (rota "limpa"), qualquer plataforma com suporte nativo a SPA (Vercel, Netlify) permite isso com uma configuração de rewrite simples — pode pedir ajuda se quiser migrar para lá futuramente.
 
 ---
 
@@ -130,14 +130,14 @@ Checklist rápido depois de configurar tudo:
 - [ ] Abrir a loja (`/`) e ver os produtos
 - [ ] Abrir um produto e adicionar ao carrinho
 - [ ] Fazer checkout (cria um pedido no Supabase e abre o WhatsApp)
-- [ ] Acessar `/admin` sem estar logado → deve redirecionar para `/admin/login`
+- [ ] Acessar `/#/admin` sem estar logado → deve redirecionar para `/#/admin/login`
 - [ ] Logar com o e-mail/senha do primeiro administrador
 - [ ] Criar um produto novo, com imagem
 - [ ] Editar preço e estoque, e conferir se atualiza na loja pública
 - [ ] Duplicar e excluir um produto
 - [ ] Criar uma categoria e associar a um produto
 - [ ] Marcar um pedido como "confirmado" e ver o estoque baixar automaticamente
-- [ ] Deslogar e confirmar que `/admin` pede login de novo
+- [ ] Deslogar e confirmar que `/#/admin` pede login de novo
 
 ---
 
@@ -148,14 +148,14 @@ Checklist rápido depois de configurar tudo:
 /produto/:id          → página do produto
 /carrinho             → carrinho
 /checkout             → finalização (cria pedido + abre WhatsApp)
-/admin/login          → login do administrador
-/admin                → dashboard (protegido)
-/admin/produtos       → lista + CRUD de produtos
-/admin/produtos/:id   → formulário (novo ou edição)
-/admin/estoque        → controle de estoque
-/admin/pedidos        → pedidos e status
-/admin/categorias     → categorias
-/admin/configuracoes  → dados da loja e administradores
+/#/admin/login          → login do administrador
+/#/admin                → dashboard (protegido)
+/#/admin/produtos       → lista + CRUD de produtos
+/#/admin/produtos/:id   → formulário (novo ou edição)
+/#/admin/estoque        → controle de estoque
+/#/admin/pedidos        → pedidos e status
+/#/admin/categorias     → categorias
+/#/admin/configuracoes  → dados da loja e administradores
 ```
 
 ## O que foi implementado
@@ -163,7 +163,7 @@ Checklist rápido depois de configurar tudo:
 - Loja pública com produtos, categorias, carrinho e checkout via WhatsApp
 - Painel `/admin` completo: dashboard, produtos, estoque, pedidos, categorias, configurações
 - Autenticação real via Supabase Auth (não é senha fixa no frontend)
-- Proteção de rota: `/admin` sem login redireciona para `/admin/login`; usuário logado mas sem permissão vê "acesso negado"
+- Proteção de rota: `/#/admin` sem login redireciona para `/#/admin/login`; usuário logado mas sem permissão vê "acesso negado"
 - Upload, reordenação e remoção de imagens (Supabase Storage)
 - Estoque com "em estoque / últimas unidades / esgotado" automático, e baixa automática ao confirmar pedido
 - Nenhuma senha, token ou chave secreta no código — tudo via `.env` (não versionado)

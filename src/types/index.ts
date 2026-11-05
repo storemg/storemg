@@ -13,6 +13,7 @@ export interface Product {
   images: string[]
   featured: boolean
   active: boolean
+  purchase_link: string | null
   created_at: string
   updated_at: string
 }
@@ -21,6 +22,7 @@ export interface Category {
   id: string
   name: string
   description: string | null
+  image: string | null
   active: boolean
   created_at: string
 }

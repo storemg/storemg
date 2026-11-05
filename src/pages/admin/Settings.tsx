@@ -72,7 +72,7 @@ export default function Settings() {
           Loja: MG Store — celulares, acessórios, periféricos e eletrônicos.
         </p>
         <p className="mt-1">
-          WhatsApp de contato configurado em VITE_WHATSAPP_NUMBER (.env).
+          Números de WhatsApp configurados em src/lib/whatsapp.ts (alternam automaticamente a cada clique).
         </p>
       </div>
     </div>

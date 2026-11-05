@@ -15,6 +15,7 @@ const empty = {
   images: [] as string[],
   featured: false,
   active: true,
+  purchase_link: '' as string,
 }
 
 export default function ProductForm() {
@@ -41,7 +42,7 @@ export default function ProductForm() {
         .eq('id', id)
         .single()
         .then(({ data }) => {
-          if (data) setForm(data as unknown as typeof empty)
+          if (data) setForm({ ...(data as unknown as typeof empty), purchase_link: (data as any).purchase_link ?? '' })
         })
     }
   }, [id, isEdit])
@@ -255,6 +256,24 @@ export default function ProductForm() {
               ))}
             </div>
           )}
+        </div>
+
+        <div>
+          <label className="mb-1 block text-xs font-medium text-white/60">
+            Link de compra (opcional)
+          </label>
+          <input
+            type="url"
+            value={form.purchase_link}
+            onChange={(e) => setForm({ ...form, purchase_link: e.target.value })}
+            placeholder="https://exemplo.com/pagina-de-compra"
+            className="w-full rounded-lg border border-white/10 bg-ink-900 px-3 py-2 text-sm outline-none focus:border-brand-500"
+          />
+          <p className="mt-1 text-xs text-white/40">
+            Preencha só se esse produto tiver uma página de compra própria (ex: um e-book,
+            um curso, um link de checkout externo). Quando preenchido, o botão de comprar
+            no site leva direto para esse link, em vez de abrir o WhatsApp ou o carrinho.
+          </p>
         </div>
 
         <div className="flex gap-3 pt-2">

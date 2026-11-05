@@ -1,75 +1,113 @@
 import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { supabase } from '../../lib/supabaseClient'
-import type { Category } from '../../types'
+import { useCategories } from '../../hooks/useCategories'
+import { openWhatsApp } from '../../lib/whatsapp'
+import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from '../../lib/socials'
+import { InstagramIcon } from '../Icons'
+
+const PAYMENT_METHODS = ['PIX', 'Visa', 'Mastercard', 'Elo', 'Boleto']
+
+const headingClass = 'font-heading mb-4 text-[15px] font-bold text-white'
+const linkClass = 'text-sm text-slate-400 transition hover:text-white'
 
 export default function Footer() {
-  const [categories, setCategories] = useState<Category[]>([])
-
-  useEffect(() => {
-    supabase
-      .from('categories')
-      .select('*')
-      .eq('active', true)
-      .order('name')
-      .then(({ data }) => setCategories(((data ?? []) as Category[]).slice(0, 5)))
-  }, [])
-
-  const waNumber = import.meta.env.VITE_WHATSAPP_NUMBER
+  const categories = useCategories().slice(0, 6)
 
   return (
-    <footer className="border-t border-white/10 bg-ink-950 py-16">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="mt-10 bg-[#070b14] text-slate-400">
+      <div className="wrap grid gap-10 py-12 md:grid-cols-[1.6fr_1fr_1fr_1fr]">
         <div>
-          <Link to="/" className="flex items-center gap-1.5 font-display text-[15px] font-bold text-white">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-            MG Store
+          <Link to="/" className="inline-block" aria-label="MG Store — página inicial">
+            <img
+              src="./logo-header.jpg"
+              alt="MG Store"
+              width={110}
+              height={56}
+              loading="lazy"
+              className="h-14 w-auto rounded-lg"
+            />
           </Link>
-          <p className="mt-3 max-w-[220px] text-sm text-white/45">
-            Celulares, acessórios, periféricos e eletrônicos com curadoria e atendimento direto pelo WhatsApp.
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
+            MG Store: tudo que você precisa em um só lugar, com produtos de diversas categorias e
+            atendimento direto pelo WhatsApp.
           </p>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-white transition hover:text-blue-400"
+          >
+            <InstagramIcon className="h-4 w-4" />
+            {INSTAGRAM_HANDLE}
+          </a>
         </div>
 
         <div>
-          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-white/70">Navegação</h4>
-          <ul className="space-y-2 text-sm text-white/45">
-            <li><Link to="/" className="hover:text-white">Início</Link></li>
-            <li><Link to="/carrinho" className="hover:text-white">Carrinho</Link></li>
+          <h4 className={headingClass}>MG Store</h4>
+          <ul className="space-y-3">
+            <li><Link to="/catalogo" className={linkClass}>Catálogo</Link></li>
+            <li><Link to="/ajuda" className={linkClass}>Central de ajuda</Link></li>
+            <li><Link to="/favoritos" className={linkClass}>Favoritos</Link></li>
+            <li><Link to="/carrinho" className={linkClass}>Carrinho</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-white/70">Categorias</h4>
-          <ul className="space-y-2 text-sm text-white/45">
-            {categories.length === 0 && <li className="text-white/25">Em breve</li>}
+          <h4 className={headingClass}>Categorias</h4>
+          <ul className="space-y-3">
+            {categories.length === 0 && <li className="text-sm text-slate-600">Em breve</li>}
             {categories.map((c) => (
-              <li key={c.id}>{c.name}</li>
+              <li key={c.id}>
+                <Link to={`/catalogo?categoria=${c.id}`} className={linkClass}>
+                  {c.name}
+                </Link>
+              </li>
             ))}
           </ul>
         </div>
 
         <div>
-          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wide text-white/70">Contato</h4>
-          <ul className="space-y-2 text-sm text-white/45">
-            {waNumber && (
-              <li>
-                <a
-                  href={`https://wa.me/${waNumber}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white"
-                >
-                  Falar no WhatsApp
-                </a>
-              </li>
-            )}
+          <h4 className={headingClass}>Atendimento</h4>
+          <ul className="space-y-3">
+            <li>
+              <button
+                onClick={() => openWhatsApp('Olá! Vim pelo site da MG Store.')}
+                className={linkClass}
+              >
+                Falar no WhatsApp
+              </button>
+            </li>
+            <li>
+              <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                Seguir no Instagram
+              </a>
+            </li>
           </ul>
         </div>
       </div>
 
-      <div className="mx-auto mt-12 flex max-w-6xl flex-col gap-2 border-t border-white/10 px-6 pt-6 text-xs text-white/35 sm:flex-row sm:justify-between">
-        <span>© {new Date().getFullYear()} MG Store — Todos os direitos reservados.</span>
-        <span>Feito com foco em tecnologia.</span>
+      <div className="border-t border-white/10">
+        <div className="wrap py-6">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Formas de pagamento
+            </span>
+            {PAYMENT_METHODS.map((method) => (
+              <span
+                key={method}
+                className="rounded-md border border-white/10 px-2.5 py-1 text-xs font-medium text-slate-300"
+              >
+                {method}
+              </span>
+            ))}
+          </div>
+          <p className="mt-4 max-w-3xl text-xs leading-relaxed text-slate-500">
+            MG Store — Loja 100% segura. Usamos criptografia de ponta e seus dados nunca são
+            compartilhados. Site confiável e verificado.
+          </p>
+          <p className="mt-4 text-xs text-slate-500">
+            © {new Date().getFullYear()} MG Store — Todos os direitos reservados.
+          </p>
+        </div>
       </div>
     </footer>
   )

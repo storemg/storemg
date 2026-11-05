@@ -6,20 +6,21 @@ export default function LoadingScreen() {
   useEffect(() => {
     // Some rápido — só o suficiente para não "piscar" a tela em branco
     // enquanto os primeiros dados (produtos/categorias) chegam.
-    const timer = setTimeout(() => setHidden(true), 650)
+    const timer = setTimeout(() => setHidden(true), 700)
     return () => clearTimeout(timer)
   }, [])
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black transition-opacity duration-500 ${
+      aria-hidden="true"
+      className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-500 ${
         hidden ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >
-      <div className="relative pb-3.5 font-display text-[19px] font-semibold tracking-[-0.01em] text-white">
-        MG STORE
-        <span className="absolute bottom-0 left-0 h-px w-full origin-left animate-loadbar bg-white" />
-      </div>
+      <img src="./logo-header.jpg" alt="" width={220} height={112} className="h-28 w-auto" />
+      <span className="relative mt-4 block h-px w-40 overflow-hidden">
+        <span className="absolute inset-0 origin-left animate-loadbar bg-blue-500" />
+      </span>
     </div>
   )
 }

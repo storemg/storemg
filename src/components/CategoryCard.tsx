@@ -1,48 +1,42 @@
-const EMOJI: Record<string, string> = {
-  celulares: '📱',
-  fones: '🎧',
-  'fones de ouvido': '🎧',
-  powerbanks: '🔋',
-  'power banks': '🔋',
-  carregadores: '🔌',
-  perifericos: '🖱️',
-  periféricos: '🖱️',
-}
-
-function iconFor(name: string) {
-  const key = name.trim().toLowerCase()
-  return EMOJI[key] ?? '⚡'
-}
+import { ChevronRightIcon } from './Icons'
 
 export default function CategoryCard({
   name,
   description,
+  image,
   active,
   onClick,
 }: {
   name: string
   description?: string | null
+  image?: string | null
   active?: boolean
   onClick: () => void
 }) {
   return (
     <button
       onClick={onClick}
-      className={`group relative overflow-hidden rounded-2xl border p-6 text-left transition-all duration-300 ease-out hover:-translate-y-1.5 ${
-        active
-          ? 'border-brand-500/60 bg-brand-500/10'
-          : 'border-white/10 bg-ink-900 hover:border-brand-500/40'
+      className={`group flex h-full w-full flex-col overflow-hidden rounded-xl border bg-white text-left shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md ${
+        active ? 'border-blue-700 ring-1 ring-blue-700' : 'border-slate-200 hover:border-slate-300'
       }`}
     >
-      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-white/5 text-xl transition-transform duration-300 group-hover:scale-110">
-        {iconFor(name)}
+      {image && (
+        <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100">
+          <img
+            src={image}
+            alt=""
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+      )}
+      <div className="flex flex-1 items-center justify-between gap-2 px-4 py-4">
+        <div className="min-w-0">
+          <h3 className="truncate text-[15px] font-semibold text-slate-900">{name}</h3>
+          <p className="mt-0.5 truncate text-[12px] text-slate-500">{description || 'Ver produtos'}</p>
+        </div>
+        <ChevronRightIcon className="h-4 w-4 flex-shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-blue-700" />
       </div>
-      <h3 className="text-[15px] font-semibold text-white">{name}</h3>
-      {description && <p className="mt-1 text-xs text-white/50">{description}</p>}
-      <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-brand-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        Ver produtos →
-      </span>
-      <span className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 ring-1 ring-inset ring-brand-500/30 transition-opacity duration-300 group-hover:opacity-100" />
     </button>
   )
 }

@@ -4,38 +4,15 @@
     <meta charset="UTF-8" />
     <title>MG Store</title>
     <!--
-      GitHub Pages serve este arquivo para QUALQUER rota que não seja
-      um arquivo real (ex: /admin, /produto/12, /carrinho).
-      Aqui a gente transforma o caminho em query string e manda pra
-      raiz do site, onde o script no index.html devolve a URL original
-      e o React Router entrega a página certa.
-      pathSegmentsToKeep = 1 porque o site fica em
-      https://usuario.github.io/mg-store/  (1 segmento: "mg-store").
-      Se um dia usar domínio próprio na raiz, troque para 0.
+      Com o site usando HashRouter (rotas como /#/admin), este arquivo
+      praticamente nunca é acionado durante o uso normal — o navegador
+      nunca pede uma página nova ao servidor ao navegar entre rotas
+      internas, só a parte antes do "#" importa para o GitHub Pages.
+      Isso aqui é só uma rede de segurança para um link direto quebrado.
     -->
-    <script type="text/javascript">
-      var pathSegmentsToKeep = 1
-      var l = window.location
-      l.replace(
-        l.protocol +
-          '//' +
-          l.hostname +
-          (l.port ? ':' + l.port : '') +
-          l.pathname
-            .split('/')
-            .slice(0, 1 + pathSegmentsToKeep)
-            .join('/') +
-          '/?/' +
-          l.pathname
-            .slice(1)
-            .split('/')
-            .slice(pathSegmentsToKeep)
-            .join('/')
-            .replace(/&/g, '~and~') +
-          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-          l.hash
-      )
-    </script>
+    <meta http-equiv="refresh" content="0; url=./" />
   </head>
-  <body></body>
+  <body>
+    <p>Redirecionando para a <a href="./">MG Store</a>…</p>
+  </body>
 </html>

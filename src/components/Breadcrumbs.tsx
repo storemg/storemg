@@ -7,17 +7,17 @@ export interface Crumb {
 
 export default function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
-    <nav className="flex flex-wrap items-center gap-1.5 text-xs text-white/40">
+    <nav aria-label="Você está em" className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-1.5">
           {item.to ? (
-            <Link to={item.to} className="transition hover:text-white">
+            <Link to={item.to} className="transition hover:text-blue-700">
               {item.label}
             </Link>
           ) : (
-            <span className="text-white/80">{item.label}</span>
+            <span className="text-slate-800">{item.label}</span>
           )}
-          {i < items.length - 1 && <span className="opacity-40">/</span>}
+          {i < items.length - 1 && <span className="text-slate-300">/</span>}
         </span>
       ))}
     </nav>
